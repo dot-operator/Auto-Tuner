@@ -13,7 +13,7 @@
 
 
 //==============================================================================
-CircularBufferAudioProcessorEditor::CircularBufferAudioProcessorEditor (CircularBufferAudioProcessor& p)
+AutoTunerAudioProcessorEditor::AutoTunerAudioProcessorEditor (AutoTunerAudioProcessor& p)
     : AudioProcessorEditor (&p), processor (p)
 {
     // Make sure that before the constructor has finished, you've set the
@@ -28,35 +28,40 @@ CircularBufferAudioProcessorEditor::CircularBufferAudioProcessorEditor (Circular
 	addAndMakeVisible(levelSlider);
 
 	levelSlider.addListener(this);
+	startTimerHz(10); // Automatically repaint 10x a second.
 }
 
-CircularBufferAudioProcessorEditor::~CircularBufferAudioProcessorEditor()
+AutoTunerAudioProcessorEditor::~AutoTunerAudioProcessorEditor()
 {
 }
 
 //==============================================================================
-void CircularBufferAudioProcessorEditor::paint (Graphics& g)
+void AutoTunerAudioProcessorEditor::paint (Graphics& g)
 {
-    // (Our component is opaque, so we must completely fill the background with a solid colour)
+    // (Our component is opaque, so we must completely fill the background with a solid color)
     g.fillAll (getLookAndFeel().findColour (ResizableWindow::backgroundColourId));
 
     g.setColour (Colours::white);
     g.setFont (15.0f);
-    //g.drawFittedText ("Noise volume", getLocalBounds(), Justification::centred, 1);
 
 	double freq = processor.GetFreq();
 	String str = String(freq) + "Hz";
 	g.drawFittedText(str, getLocalBounds(), Justification::centred, 1);
 }
 
-void CircularBufferAudioProcessorEditor::resized()
+void AutoTunerAudioProcessorEditor::resized()
 {
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor.
 	levelSlider.setBounds(40, 30, getWidth() - 60, 20);
 }
 
-void CircularBufferAudioProcessorEditor::sliderValueChanged(Slider * slider)
+void AutoTunerAudioProcessorEditor::sliderValueChanged(Slider * slider)
 {
 	processor.fDetectionEpsilon = levelSlider.getValue();
+}
+
+void AutoTunerAudioProcessorEditor::timerCallback()
+{
+	repaint();
 }

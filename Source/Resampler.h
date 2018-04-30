@@ -41,7 +41,7 @@ public:
 	~Resampler() {};
 private:
 	// Need to preserve the type so we have copies of these functions for each
-	inline float ToBufferPosition(float x);
+	//inline float ToBufferPosition(float x);
 	inline unsigned ToBufferPosition(int x);
 
 	//std::unique_ptr<float[]> buff;

@@ -35,8 +35,15 @@ void Resampler::SetResampleInfo(float inHz, float outHz)
 
 float & Resampler::operator[](float x)
 {
-	// just nearest sample right now
-	return buff[(int)ToBufferPosition(x)];
+	// Simple linear interpolation between samples
+	// if we don't have an integer sample position.
+	if (floorf(x) == x) {
+		return buff[ToBufferPosition((int)x)];
+	}
+	
+	float alpha = fmod(x, 1.f);
+	float result = (1 - alpha) * ToBufferPosition((int)x) + alpha * ToBufferPosition((int)x + 1);
+	return result;
 }
 
 float & Resampler::operator[](int x)
@@ -78,6 +85,7 @@ Resampler::Resampler(unsigned blocksize)
 	FloatVectorOperations::clear(&buff[0], blocksize);
 }
 
+#if 0
 inline float Resampler::ToBufferPosition(float x)
 {
 	if (x >= 0) {
@@ -90,6 +98,7 @@ inline float Resampler::ToBufferPosition(float x)
 		return (uBuffSize - x);
 	}
 }
+#endif
 
 inline unsigned Resampler::ToBufferPosition(int x)
 {

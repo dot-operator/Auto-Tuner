@@ -13,7 +13,7 @@
 
 
 //==============================================================================
-CircularBufferAudioProcessor::CircularBufferAudioProcessor()
+AutoTunerAudioProcessor::AutoTunerAudioProcessor()
 #ifndef JucePlugin_PreferredChannelConfigurations
      : AudioProcessor (BusesProperties()
                      #if ! JucePlugin_IsMidiEffect
@@ -27,17 +27,17 @@ CircularBufferAudioProcessor::CircularBufferAudioProcessor()
 {
 }
 
-CircularBufferAudioProcessor::~CircularBufferAudioProcessor()
+AutoTunerAudioProcessor::~AutoTunerAudioProcessor()
 {
 }
 
 //==============================================================================
-const String CircularBufferAudioProcessor::getName() const
+const String AutoTunerAudioProcessor::getName() const
 {
     return JucePlugin_Name;
 }
 
-bool CircularBufferAudioProcessor::acceptsMidi() const
+bool AutoTunerAudioProcessor::acceptsMidi() const
 {
    #if JucePlugin_WantsMidiInput
     return true;
@@ -46,7 +46,7 @@ bool CircularBufferAudioProcessor::acceptsMidi() const
    #endif
 }
 
-bool CircularBufferAudioProcessor::producesMidi() const
+bool AutoTunerAudioProcessor::producesMidi() const
 {
    #if JucePlugin_ProducesMidiOutput
     return true;
@@ -55,7 +55,7 @@ bool CircularBufferAudioProcessor::producesMidi() const
    #endif
 }
 
-bool CircularBufferAudioProcessor::isMidiEffect() const
+bool AutoTunerAudioProcessor::isMidiEffect() const
 {
    #if JucePlugin_IsMidiEffect
     return true;
@@ -64,37 +64,37 @@ bool CircularBufferAudioProcessor::isMidiEffect() const
    #endif
 }
 
-double CircularBufferAudioProcessor::getTailLengthSeconds() const
+double AutoTunerAudioProcessor::getTailLengthSeconds() const
 {
     return 0.0;
 }
 
-int CircularBufferAudioProcessor::getNumPrograms()
+int AutoTunerAudioProcessor::getNumPrograms()
 {
     return 1;   // NB: some hosts don't cope very well if you tell them there are 0 programs,
                 // so this should be at least 1, even if you're not really implementing programs.
 }
 
-int CircularBufferAudioProcessor::getCurrentProgram()
+int AutoTunerAudioProcessor::getCurrentProgram()
 {
     return 0;
 }
 
-void CircularBufferAudioProcessor::setCurrentProgram (int index)
+void AutoTunerAudioProcessor::setCurrentProgram (int index)
 {
 }
 
-const String CircularBufferAudioProcessor::getProgramName (int index)
+const String AutoTunerAudioProcessor::getProgramName (int index)
 {
     return {};
 }
 
-void CircularBufferAudioProcessor::changeProgramName (int index, const String& newName)
+void AutoTunerAudioProcessor::changeProgramName (int index, const String& newName)
 {
 }
 
 //==============================================================================
-void CircularBufferAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
+void AutoTunerAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
@@ -111,14 +111,14 @@ void CircularBufferAudioProcessor::prepareToPlay (double sampleRate, int samples
 	fOutputCursor = 0.f;
 }
 
-void CircularBufferAudioProcessor::releaseResources()
+void AutoTunerAudioProcessor::releaseResources()
 {
     // When playback stops, you can use this as an opportunity to free up any
     // spare memory, etc.
 }
 
 #ifndef JucePlugin_PreferredChannelConfigurations
-bool CircularBufferAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
+bool AutoTunerAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
 {
   #if JucePlugin_IsMidiEffect
     ignoreUnused (layouts);
@@ -141,7 +141,7 @@ bool CircularBufferAudioProcessor::isBusesLayoutSupported (const BusesLayout& la
 }
 #endif
 
-void CircularBufferAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
+void AutoTunerAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
 {
     ScopedNoDenormals noDenormals;
     auto totalNumInputChannels  = getTotalNumInputChannels();
@@ -195,31 +195,31 @@ void CircularBufferAudioProcessor::processBlock (AudioBuffer<float>& buffer, Mid
 }
 
 //==============================================================================
-bool CircularBufferAudioProcessor::hasEditor() const
+bool AutoTunerAudioProcessor::hasEditor() const
 {
     return true; // (change this to false if you choose to not supply an editor)
 }
 
-AudioProcessorEditor* CircularBufferAudioProcessor::createEditor()
+AudioProcessorEditor* AutoTunerAudioProcessor::createEditor()
 {
-    return new CircularBufferAudioProcessorEditor (*this);
+    return new AutoTunerAudioProcessorEditor (*this);
 }
 
 //==============================================================================
-void CircularBufferAudioProcessor::getStateInformation (MemoryBlock& destData)
+void AutoTunerAudioProcessor::getStateInformation (MemoryBlock& destData)
 {
     // You should use this method to store your parameters in the memory block.
     // You could do that either as raw data, or use the XML or ValueTree classes
     // as intermediaries to make it easy to save and load complex data.
 }
 
-void CircularBufferAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
+void AutoTunerAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
 }
 
-inline void CircularBufferAudioProcessor::UpdateAutocorrelation(int pos)
+inline void AutoTunerAudioProcessor::UpdateAutocorrelation(int pos)
 {
 	// Acc energy
 	// Vector add most recent sample squared.
@@ -243,14 +243,14 @@ inline void CircularBufferAudioProcessor::UpdateAutocorrelation(int pos)
 		bPitchStale = true;
 }
 
-inline bool CircularBufferAudioProcessor::TryUpdatePitch()
+inline bool AutoTunerAudioProcessor::TryUpdatePitch()
 {
 	// Compute the difference between the accumulated energy and autocorrelation.
 	FloatVectorOperations::copy(arrScratchpad, arrAccumEnergy, NUM_PITCHSLOTS);
 	FloatVectorOperations::subtractWithMultiply(arrScratchpad, arrAutoCorr, 2.f, NUM_PITCHSLOTS);
 	
-	// Find the first minimum of these differences
-	// if the autocor. was normalized, this would be the sample closest
+	// Find the first minimum of these differences.
+	// If the autocor. was normalized, this would be the sample closest
 	// to an autocorrelation of 1.
 	size_t uBestDifferencePos = 0;
 	bool bCheckedHarmonic = false;
@@ -290,7 +290,7 @@ inline bool CircularBufferAudioProcessor::TryUpdatePitch()
 	return false;
 }
 
-void CircularBufferAudioProcessor::ProcessMidiMessages(const MidiBuffer & midi)
+void AutoTunerAudioProcessor::ProcessMidiMessages(const MidiBuffer & midi)
 {
 	// Very simple mono midi note detection.
 	int time;
@@ -316,5 +316,5 @@ void CircularBufferAudioProcessor::ProcessMidiMessages(const MidiBuffer & midi)
 // This creates new instances of the plugin..
 AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
-    return new CircularBufferAudioProcessor();
+    return new AutoTunerAudioProcessor();
 }

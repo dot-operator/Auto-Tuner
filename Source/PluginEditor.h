@@ -17,11 +17,11 @@
 //==============================================================================
 /**
 */
-class CircularBufferAudioProcessorEditor  : public AudioProcessorEditor, private Slider::Listener
+class AutoTunerAudioProcessorEditor  : public AudioProcessorEditor, private Slider::Listener, private Timer
 {
 public:
-    CircularBufferAudioProcessorEditor (CircularBufferAudioProcessor&);
-    ~CircularBufferAudioProcessorEditor();
+    AutoTunerAudioProcessorEditor (AutoTunerAudioProcessor&);
+    ~AutoTunerAudioProcessorEditor();
 
     //==============================================================================
     void paint (Graphics&) override;
@@ -30,11 +30,12 @@ public:
 	void sliderValueChanged(Slider *slider) override;
 
 private:
+	void timerCallback() override;
     Slider levelSlider;
 
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
-    CircularBufferAudioProcessor& processor;
+    AutoTunerAudioProcessor& processor;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CircularBufferAudioProcessorEditor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AutoTunerAudioProcessorEditor)
 };
