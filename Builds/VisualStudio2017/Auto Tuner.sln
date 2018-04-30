@@ -1,0 +1,38 @@
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2017
+
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Auto Tuner - Standalone Plugin", "Auto Tuner_StandalonePlugin.vcxproj", "{DA56FBE0-DF91-E3FE-CCF2-35E2EC045B3A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A9FAF0DA-607A-5587-A666-0CF7EA46E062} = {A9FAF0DA-607A-5587-A666-0CF7EA46E062}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Auto Tuner - VST", "Auto Tuner_VST.vcxproj", "{2D3DEDA9-D0F2-DAB5-EB44-F033C8E00460}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A9FAF0DA-607A-5587-A666-0CF7EA46E062} = {A9FAF0DA-607A-5587-A666-0CF7EA46E062}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Auto Tuner - Shared Code", "Auto Tuner_SharedCode.vcxproj", "{A9FAF0DA-607A-5587-A666-0CF7EA46E062}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2D3DEDA9-D0F2-DAB5-EB44-F033C8E00460}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2D3DEDA9-D0F2-DAB5-EB44-F033C8E00460}.Debug|Win32.Build.0 = Debug|Win32
+		{2D3DEDA9-D0F2-DAB5-EB44-F033C8E00460}.Release|Win32.ActiveCfg = Release|Win32
+		{2D3DEDA9-D0F2-DAB5-EB44-F033C8E00460}.Release|Win32.Build.0 = Release|Win32
+		{DA56FBE0-DF91-E3FE-CCF2-35E2EC045B3A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{DA56FBE0-DF91-E3FE-CCF2-35E2EC045B3A}.Debug|Win32.Build.0 = Debug|Win32
+		{DA56FBE0-DF91-E3FE-CCF2-35E2EC045B3A}.Release|Win32.ActiveCfg = Release|Win32
+		{DA56FBE0-DF91-E3FE-CCF2-35E2EC045B3A}.Release|Win32.Build.0 = Release|Win32
+		{A9FAF0DA-607A-5587-A666-0CF7EA46E062}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A9FAF0DA-607A-5587-A666-0CF7EA46E062}.Debug|Win32.Build.0 = Debug|Win32
+		{A9FAF0DA-607A-5587-A666-0CF7EA46E062}.Release|Win32.ActiveCfg = Release|Win32
+		{A9FAF0DA-607A-5587-A666-0CF7EA46E062}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
