@@ -108,7 +108,7 @@ void AutoTunerAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBl
 	uDetectedPeriod = 0;
 	uSampleCount = 0;
 	iDetectionCursor = 0;
-	fOutputCursor = 0.f;
+	fOutputCursor = -5.f;
 }
 
 void AutoTunerAudioProcessor::releaseResources()
@@ -174,6 +174,7 @@ void AutoTunerAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuff
 
 		// move the output cursor forward by the resample rate.
 		monobuff[i] = resampler[fOutputCursor];
+#if 0
 		if (bResample && (uKeysDown > 0)) {
 			resampler.SetResampleInfo((dSampleRate / (float)uDetectedPeriod), fDesiredPeriod);
 			fOutputCursor += resampler.GetResampleRate();
@@ -182,7 +183,9 @@ void AutoTunerAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuff
 			else if (fOutputCursor <= (iInputCursor - uDetectedPeriod))
 				fOutputCursor += uDetectedPeriod;
 		}
-		else ++fOutputCursor;
+		else
+#endif
+			++fOutputCursor;
 		fOutputCursor = fmod(fOutputCursor, resampler.GetBufferSize());
 	}
 
@@ -227,11 +230,14 @@ inline void AutoTunerAudioProcessor::UpdateAutocorrelation(int pos)
 	FloatVectorOperations::add(arrAccumEnergy, curSample * curSample, NUM_PITCHSLOTS);
 	for (size_t i = 0; i < NUM_PITCHSLOTS; ++i) {
 		// Remove the oldest relevant sample.
-		int window = pos - (12 + i);
-		int twowindow = pos - (12 + i) * 2;
+		int window = pos - (MINIMUM_WAVELENGTH + i);
+		int twowindow = pos - (MINIMUM_WAVELENGTH + i) * 2;
 		float oneago = resampler[window];
 		float twoago = resampler[twowindow];
 		arrAccumEnergy[i] -= (twoago * twoago);
+		if (arrAccumEnergy[i] < 0.f) {
+			int x = 0; // bad
+		}
 
 		// autocorrelation
 		// Add current sample * sample one window length ago.

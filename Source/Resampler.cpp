@@ -12,15 +12,13 @@
 
 void Resampler::Copy(float * channel, unsigned numSamples)
 {
-	// Since we initialized our buffer to be 2x the frame size,
-	// this should be a matter of placing it where the cursor left off,
-	// without the need to split it.
-	// numSamples is just a sanity check.
-	if (uBuffSize / 2 != numSamples) {
-		std::length_error("Expected the number of samples to be 0.5x the ring buffer.");
-		return;
+	unsigned copyend = numSamples + uInputCursor;
+	if (copyend >= buff.size()) {
+		copyend = buff.size() - uInputCursor;
+		FloatVectorOperations::copy(&buff[uInputCursor], channel, copyend);
+		numSamples -= copyend;
+		uInputCursor = 0;
 	}
-
 	FloatVectorOperations::copy(&buff[uInputCursor], channel, numSamples);
 	uInputCursor = (uInputCursor + numSamples) % uBuffSize;
 }
@@ -78,6 +76,8 @@ Resampler::Resampler(Resampler && other)
 
 Resampler::Resampler(unsigned blocksize)
 {
+	// Buffer needs to at least be big enough to use autocorrelation windows looking back ~900 samples
+	blocksize = std::max(blocksize, (unsigned)((MINIMUM_WAVELENGTH + NUM_PITCHSLOTS) * 2));
 	uBuffSize = blocksize * 2;
 	buff.clear();
 	buff.insert(buff.end(), uBuffSize, 0.f);

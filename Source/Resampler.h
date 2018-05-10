@@ -13,6 +13,9 @@
 //#include <memory>
 #include <vector>
 
+#define NUM_PITCHSLOTS 888
+#define MINIMUM_WAVELENGTH 12
+
 class Resampler
 {
 public:
@@ -29,7 +32,7 @@ public:
 		return uBuffSize;
 	}
 	
-	float fOutputCursor{ -5.f };
+	// float fOutputCursor{ -5.f };
 
 	// Accept fractional sample positions and interpolate
 	float& operator[](float x);

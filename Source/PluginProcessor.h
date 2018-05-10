@@ -14,9 +14,6 @@
 
 #include "Resampler.h"
 
-#define NUM_PITCHSLOTS 888
-#define MINIMUM_WAVELENGTH 12
-
 //==============================================================================
 /**
 */
